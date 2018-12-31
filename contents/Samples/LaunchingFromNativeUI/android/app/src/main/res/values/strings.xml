@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Launching From Native UI</string>
+    <string name="show_default_screen">Show Default Screen</string>
+    <string name="show_polygons_screen">Show Polygons Screen</string>
+    <string name="show_fishies_screen">Show Fishies Screen</string>
+    <string name="show_clock_screen">Show Clock Screen</string>
+</resources>
