@@ -296,6 +296,31 @@ else
 	PRODUCT_TYPE=all
 fi
 
+
+(
+    set -e
+    if [ ! -f "$PLATFORM_DIR/android/gradlew" ]
+    then
+        exit 0
+    fi
+    echo Building Gradle artifacts!
+    unset ANDROID_SDK_ROOT
+    unset ANDROID_SDK
+    unset ANDROID_NDK
+    export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
+    SDK_LICENSE_FILE="$ANDROID_SDK_ROOT/licenses/android-sdk-license"
+    SDK_LICENSE="24333f8a63b6825ea9c5514f83c2829b004d1fee"
+    mkdir -p "$(dirname "${SDK_LICENSE_FILE}")"
+    if [ ! -f "${SDK_LICENSE_FILE}" ] || ! grep -q "^${SDK_LICENSE}$" "${SDK_LICENSE_FILE}"
+    then
+        printf '\n%s' "${SDK_LICENSE}" >> "${SDK_LICENSE_FILE}"
+    fi
+    cd "$PLATFORM_DIR/android"
+    rm -rf sdk/src/com/ansca/corona/SplashScreenBeacon.java sdk/libs sdk/build app/build
+    ./gradlew installAppTemplateAndAARToNative -PcoronaNativeOutputDir="$CORONA_DIR"
+)
+checkError
+
 pushd "$PLATFORM_DIR/android"
     ./build_template.sh $PRODUCT_TYPE release clean all
     checkError
