@@ -316,6 +316,7 @@ fi
         printf '\n%s' "${SDK_LICENSE}" >> "${SDK_LICENSE_FILE}"
     fi
     cd "$PLATFORM_DIR/android"
+    ./gradlew clean
     rm -rf sdk/src/com/ansca/corona/SplashScreenBeacon.java sdk/libs sdk/build app/build
     ./gradlew installAppTemplateAndAARToNative -PcoronaNativeOutputDir="$CORONA_DIR"
 )
