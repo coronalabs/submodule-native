@@ -10,6 +10,8 @@
 
 -- Hide the status bar.
 display.setStatusBar(display.HiddenStatusBar)
+native.setProperty( "androidSystemUiVisibility", "immersive" )
+
 
 -- Display a white background.
 display.setDefault("background", 1.0, 1.0, 1.0)
