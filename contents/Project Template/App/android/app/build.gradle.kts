@@ -64,6 +64,7 @@ val generatedPluginAssetsDir = "$generatedPluginsOutput/assets"
 val generatedPluginNativeLibsDir = "$generatedPluginsOutput/native"
 val generatedControlPath = "$generatedPluginsOutput/control"
 val generatedBuildIdPath = "$generatedPluginsOutput/build"
+val generatedPluginMegaJar = "$generatedPluginsOutput/plugins.jar"
 val generatedMainIconsAndBannersDir = "$buildDir/generated/corona_icons"
 
 
@@ -100,11 +101,11 @@ if (configureCoronaPlugins == "YES") {
 
 @Suppress("OldTargetApi")
 android {
-    compileSdkVersion(27)
+    compileSdkVersion(28)
     defaultConfig {
         applicationId = coronaAppPackage ?: "com.mycompany.app"
         minSdkVersion(15)
-        targetSdkVersion(27)
+        targetSdkVersion(28)
         versionCode = coronaVersionCode?.toInt() ?: 1
         versionName = coronaVersionName ?: "1.0"
         multiDexEnabled = true
@@ -691,6 +692,31 @@ fun downloadAndProcessCoronaPlugins(reDownloadPlugins: Boolean = true) {
             }
         }
     }
+
+    logger.lifecycle("Collecting legacy jar libraries")
+    run {
+        val megaJarExtracted = "$buildDir/intermediates/corona-mega-jar"
+        delete(megaJarExtracted)
+        delete(generatedPluginMegaJar)
+        fileTree(coronaPlugins) {
+            include("*/*.jar")
+            pluginDisabledJar.forEach {
+                exclude("**/$it/**")
+            }
+        }.sortedBy {
+            it.parent.contains("shared.")
+        }.forEach {
+            copy {
+                from(zipTree(it))
+                into(megaJarExtracted)
+            }
+        }
+        if (file(megaJarExtracted).exists()) {
+            ant.withGroovyBuilder {
+                "zip"("destfile" to generatedPluginMegaJar, "basedir" to megaJarExtracted)
+            }
+        }
+    }
 }
 
 tasks.register("setUpCoronaAppAndPlugins") {
@@ -701,6 +727,7 @@ tasks.register("setUpCoronaAppAndPlugins") {
 }
 
 tasks.register("processPluginsNoDownload") {
+    if (coronaBuiltFromSource) group = "Corona"
     doLast {
         downloadAndProcessCoronaPlugins(false)
     }
@@ -756,7 +783,7 @@ tasks.register<Zip>("exportCoronaAppTemplate") {
     destinationDirectory.set(file("$buildDir/outputs"))
     archiveFileName.set("android-template.zip")
     from(rootDir) {
-        include("build.gradle.kts", "settings.gradle.kts")
+        include("build.gradle.kts", "settings.gradle.kts", "gradle.properties")
         include("gradlew", "gradlew.bat", "gradle/wrapper/**")
         include("app/**")
         exclude("app/build/**", "app/CMakeLists.txt")
@@ -842,36 +869,50 @@ tasks.register<Copy>("installAppTemplateAndAARToNative") {
     into("$coronaNativeOutputDir/android/lib/gradle")
 }
 
+fun copyWithAppFilename(dest: String, appName: String?) {
+    delete("$dest/$coronaAppFileName.apk")
+    delete("$dest/$coronaAppFileName.aab")
+    copy {
+        into(dest)
+        val copyTask = this
+        android.applicationVariants.matching {
+            it.name.compareTo("release", true) == 0
+        }.all {
+            copyTask.from(packageApplicationProvider!!.get().outputDirectory) {
+                include("*.apk")
+                exclude("*unsigned*")
+            }
+            copyTask.from("$buildDir/outputs/bundle/$name") {
+                include("*.aab")
+            }
+        }
+        rename {
+            "$appName.${file(it).extension}"
+        }
+    }
+}
 
-tasks.create<Copy>("buildCoronaApp") {
+tasks.create("buildCoronaApp") {
     description = "Used when Simulator invokes a build. It all project variables must be passed"
     dependsOn("assembleRelease")
     dependsOn("bundleRelease")
     dependsOn("createExpansionFile")
 
-    val copyTask = this
-    android.applicationVariants.matching {
-        it.name.compareTo("release", true) == 0
-    }.all {
-        copyTask.from(packageApplicationProvider!!.get().outputDirectory) {
-            include("*.apk")
-            exclude("*unsigned*")
-        }
-        copyTask.from("$buildDir/outputs/bundle/$name") {
-            include("*.aab")
-        }
-    }
-    rename {
-        "$coronaAppFileName.${file(it).extension}"
-    }
     coronaDstDir?.let {
-        into(it)
-        doFirst {
-            delete("$it/$coronaAppFileName.apk")
-            delete("$it/$coronaAppFileName.aab")
-            delete("$it/$coronaExpansionFileName")
-        }
         doLast {
+            try {
+                copyWithAppFilename(it, coronaAppFileName)
+            } catch (ignore: Exception) {
+                try {
+                    val defaultName = "App"
+                    copyWithAppFilename(it, defaultName)
+                    logger.error("WARNING: Used default filename '$defaultName' because original contains non-ASCII symbols.")
+                } catch (ex: Exception) {
+                    logger.error("ERROR: Unable to finalize build. Make sure path to destination doesn't contain non-ASCII symbols")
+                    throw ex
+                }
+            }
+            delete("$it/$coronaExpansionFileName")
             copy {
                 from("$buildDir/outputs/$coronaExpansionFileName")
                 into(it)
@@ -1064,12 +1105,9 @@ dependencies {
             include("**/*.jar")
         })
     }
-    implementation(fileTree(coronaPlugins) {
-        include("*/*.jar")
-        pluginDisabledJar.forEach {
-            exclude("**/$it/**")
-        }
-    })
+    if (file(generatedPluginMegaJar).exists()) {
+        implementation(files(generatedPluginMegaJar))
+    }
     implementation(fileTree(coronaPlugins) {
         include("**/*.aar")
     })
