@@ -50,8 +50,24 @@ val windowsPathHelper = "${System.getenv("PATH")}${File.pathSeparator}${System.g
 
 val coronaPlugins = file("$buildDir/corona-plugins")
 
+fun checkCoronaNativeInstallation() {
+    if (file("$nativeDir/Corona/android/resource/android-template.zip").exists())
+        return
+    if (windows) {
+        throw InvalidUserDataException("Corona Native was not set-up properly. Re-install Corona to fix this issue.")
+    } else {
+        val setupNativeApp = File("/Applications").listFiles { f ->
+            f.isDirectory && f.name.startsWith("Corona")
+        }?.max()?.let {
+            "${it.absolutePath}/Native/Setup Corona Native.app"
+        } ?: "Native/Setup Corona Native.app"
+        throw InvalidUserDataException("Corona Native was not set-up properly. Launch '$setupNativeApp'.")
+    }
+}
+
 val buildToolsDir = "$projectDir/buildTools".takeIf { file(it).exists() }
         ?: "$projectDir/../template".takeIf { file(it).exists() } ?: {
+            checkCoronaNativeInstallation()
             copy {
                 from(zipTree("$nativeDir/Corona/android/resource/android-template.zip"))
                 into("$buildDir/intermediates/corona-build-tools")
@@ -124,15 +140,20 @@ val coronaVersionCode: Int = try {
     null
 } ?: (project.findProperty("coronaVersionCode") as? String)?.toIntOrNull() ?: 1
 
+val androidDestPluginPlatform = if (coronaTargetStore.equals("amazon", ignoreCase = true)) {
+    "android-kindle"
+} else {
+    "android"
+}
 
 val coronaAndroidPluginsCache = file(if (windows) {
     if (coronaCustomHome.isNullOrEmpty()) {
-        "${System.getenv("APPDATA")}/Corona Labs/Corona Simulator/build cache/android"
+        "${System.getenv("APPDATA")}/Corona Labs/Corona Simulator/build cache/$androidDestPluginPlatform"
     } else {
-        "$coronaCustomHome/build cache/android"
+        "$coronaCustomHome/build cache/$androidDestPluginPlatform"
     }
 } else {
-    "${System.getenv("HOME")}/Library/Application Support/Corona/build cache/android"
+    "${System.getenv("HOME")}/Library/Application Support/Corona/build cache/$androidDestPluginPlatform"
 })
 val eTagFileName = "${coronaAndroidPluginsCache.parent}/CoronaETags.txt"
 
@@ -491,7 +512,8 @@ fun downloadPluginsBasedOnBuilderOutput(builderOutput: ByteArrayOutputStream, eT
             .filter { it.startsWith("plugin\t") }
             .map { it.trim().removePrefix("plugin\t").split("\t") }
     pluginUrls.forEach { (plugin, url) ->
-        val existingTag = eTagMap[plugin]
+        val eTagKey = "$androidDestPluginPlatform/$plugin"
+        val existingTag = eTagMap[eTagKey]
         try {
             val outputFile = with(DownloadAction(project)) {
                 src(url)
@@ -503,7 +525,7 @@ fun downloadPluginsBasedOnBuilderOutput(builderOutput: ByteArrayOutputStream, eT
                 responseInterceptor { response, _ ->
                     val eTag = response.getFirstHeader("ETag")
                     if (eTag != null) {
-                        newETagMap[plugin] = eTag.value
+                        newETagMap[eTagKey] = eTag.value
                     }
                 }
                 execute()
@@ -562,7 +584,7 @@ fun downloadAndProcessCoronaPlugins(reDownloadPlugins: Boolean = true) {
                 val buildData = coronaBuildData?.let { file(it).readText() } ?: fakeBuildData
                 ?: throw InvalidModelException("Unable to retrieve build.data: '$coronaBuildData', '${file(coronaBuildData
                         ?: "null")}'")
-                commandLine(coronaBuilder, "plugins", "download", "android", inputSettingsFile, "--android-build", "--build-data")
+                commandLine(coronaBuilder, "plugins", "download", androidDestPluginPlatform, inputSettingsFile, "--android-build", "--build-data")
                 if (windows) environment["PATH"] = windowsPathHelper
                 standardInput = StringInputStream(buildData)
                 standardOutput = builderOutput
@@ -592,7 +614,7 @@ fun downloadAndProcessCoronaPlugins(reDownloadPlugins: Boolean = true) {
             val pluginDirectories = (pluginDirectoriesSet - pluginDisabledDependencies).toTypedArray()
             val builderOutput = ByteArrayOutputStream()
             val execResult = exec {
-                commandLine(coronaBuilder, "plugins", "download", "android", "--fetch-dependencies", coronaPlugins, *pluginDirectories)
+                commandLine(coronaBuilder, "plugins", "download", androidDestPluginPlatform, "--fetch-dependencies", coronaPlugins, *pluginDirectories)
                 if (windows) environment["PATH"] = windowsPathHelper
                 standardOutput = builderOutput
                 isIgnoreExitValue = true
@@ -889,7 +911,7 @@ tasks.register<Zip>("exportCoronaAppTemplate") {
     }
 }
 
-tasks.register<Copy>("exportToNativeTemplate") {
+tasks.register<Copy>("exportToNativeAppTemplate") {
     if (coronaBuiltFromSource) group = "Corona-dev"
     enabled = coronaBuiltFromSource
     val templateDir = "$rootDir/../../subrepos/enterprise/contents/Project Template/App/android"
@@ -956,7 +978,7 @@ fun copyWithAppFilename(dest: String, appName: String?) {
         into(dest)
         val copyTask = this
         android.applicationVariants.matching {
-            it.name.compareTo("release", true) == 0
+            it.name.equals("release", true)
         }.all {
             copyTask.from(packageApplicationProvider!!.get().outputDirectory) {
                 include("*.apk")
@@ -1175,11 +1197,8 @@ dependencies {
         if (coronaLocal.exists()) {
             implementation(files(coronaLocal))
         } else {
-            val coronaNativeAAR = file("$nativeDir/Corona/android/lib/gradle/Corona.aar")
-            if (!coronaNativeAAR.exists()) {
-                throw InvalidUserDataException("Corona Native was not set-up properly. Launch `Native/Setup Corona Native.app` on macOS or reinstall on Windows.")
-            }
-            implementation(files(coronaNativeAAR))
+            checkCoronaNativeInstallation()
+            implementation(files("$nativeDir/Corona/android/lib/gradle/Corona.aar"))
             implementation(files("$nativeDir/Corona/android/lib/Corona/libs/licensing-google.jar"))
         }
         implementation(fileTree("libs") {
