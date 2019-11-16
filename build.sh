@@ -322,22 +322,6 @@ fi
 )
 checkError
 
-pushd "$PLATFORM_DIR/android"
-    ./build_template.sh $PRODUCT_TYPE release clean all
-    checkError
-
-    mv -v bin/enterprise/Libraries/* "$CORONA_DIR/android/lib"
-    checkError
-
-    mv -v bin/enterprise/Tools/* "$CORONA_DIR/android/bin/"
-    checkError
-
-	# Remove the default splash screen
-    rm -v "$CORONA_DIR/android/lib/Corona/res/drawable/_corona_splash_screen.png"
-    checkError
-
-popd > /dev/null
-
 # 
 # docs
 # 
