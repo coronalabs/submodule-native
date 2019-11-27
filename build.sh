@@ -319,6 +319,9 @@ fi
     ./gradlew clean
     rm -rf sdk/src/com/ansca/corona/SplashScreenBeacon.java sdk/libs sdk/build app/build
     ./gradlew installAppTemplateAndAARToNative -PcoronaNativeOutputDir="$CORONA_DIR"
+
+    mkdir -p "$CORONA_DIR/android/lib/Corona/libs/"
+    cp "$ROOT_DIR/plugins/build/licensing-google/android/bin/classes.jar" "$CORONA_DIR/android/lib/Corona/libs/licensing-google.jar"
 )
 checkError
 
