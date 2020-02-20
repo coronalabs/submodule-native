@@ -1,9 +1,11 @@
-// ----------------------------------------------------------------------------
-// 
-// SimulatorPluginLibrary.h
-// Copyright (c) 2012 Corona Labs Inc. All rights reserved.
-// 
-// ----------------------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////////
+//
+// This file is part of the Corona game engine.
+// For overview and more information on licensing please refer to README.md 
+// Home page: https://github.com/coronalabs/corona
+// Contact: support@coronalabs.com
+//
+//////////////////////////////////////////////////////////////////////////////
 
 #ifndef _SimulatorPluginLibrary_H__
 #define _SimulatorPluginLibrary_H__
