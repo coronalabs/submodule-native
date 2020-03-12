@@ -89,17 +89,6 @@ CORONA_SHARED_INCLUDE_LUA_DIR=$CORONA_SHARED_DIR/include/lua
 CORONA_SHARED_RESOURCE_DIR=$CORONA_SHARED_DIR/resource
 
 
-#
-# Disable GUI prompts (TODO: Does not work)
-#
-if [[ "$USER" ]] && [[ "$PASSWORD" ]]
-then
-    security unlock-keychain -p "$PASSWORD" "/Users/$USER/Library/Keychains/login.keychain"
-elif [[ "$USER" ]]
-then
-    security unlock-keychain "/Users/$USER/Library/Keychains/login.keychain"
-
-fi
 
 # 
 # Shared
