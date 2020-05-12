@@ -271,8 +271,6 @@
 				A484111615114F700074BD57 /* Frameworks */,
 				A4841162151268030074BD57 /* Compile */,
 				A484118B15128E320074BD57 /* build.settings to Info.plist */,
-				A484118F1512906B0074BD57 /* Certify */,
-				A484119015129A930074BD57 /* Touch main.mm to enshure rebuild */,
 			);
 			buildRules = (
 			);
@@ -296,6 +294,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = A484110E15114F700074BD57;
@@ -354,36 +353,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$CORONA_ROOT\"/Corona/mac/bin/CreateInfoPlist.sh\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		A484118F1512906B0074BD57 /* Certify */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Certify;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$CORONA_ROOT\"/Corona/mac/bin/CertifyBuild.sh\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		A484119015129A930074BD57 /* Touch main.mm to enshure rebuild */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Touch main.mm to enshure rebuild";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Ensures that next attempt to build actually rebuilds the executable so it can be (re)app_sign(ed)\necho \"Updating modification time of $PROJECT_DIR/main.mm to trigger relink of $BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\"\necho \"We need to do this b/c app_sign can only sign an unsigned executable.\"\ntouch \"$PROJECT_DIR/main.mm\"";
 			showEnvVarsInLog = 0;
 		};
 		C22F67981EE9FCB0009D6E9D /* Corona Native */ = {
