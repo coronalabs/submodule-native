@@ -318,8 +318,6 @@
 				A484111615114F700074BD57 /* Frameworks */,
 				A4841162151268030074BD57 /* Compile Corona Project */,
 				A484118B15128E320074BD57 /* build.settings to Info.plist */,
-				A484118F1512906B0074BD57 /* Certify Corona Build */,
-				A484119015129A930074BD57 /* Touch main.mm to ensure build */,
 			);
 			buildRules = (
 			);
@@ -351,6 +349,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = A484110E15114F700074BD57;
@@ -429,36 +428,6 @@
 			shellScript = "\"$CORONA_ROOT\"/Corona/mac/bin/CreateInfoPlist.sh\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		A484118F1512906B0074BD57 /* Certify Corona Build */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Certify Corona Build";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$CORONA_ROOT\"/Corona/mac/bin/CertifyBuild.sh\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		A484119015129A930074BD57 /* Touch main.mm to ensure build */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Touch main.mm to ensure build";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Ensures that next attempt to build actually rebuilds the executable so it can be (re)app_sign(ed)\necho \"Updating modification time of $PROJECT_DIR/main.mm to trigger relink of $BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\"\necho \"We need to do this b/c app_sign can only sign an unsigned executable.\"\ntouch \"$PROJECT_DIR/main.mm\"";
-			showEnvVarsInLog = 0;
-		};
 		C28A3B451EE9F8FD00F08609 /* Corona Native */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -471,7 +440,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# echo \"CORONA_ROOT: ${CORONA_ROOT}\"\nif [ ! -d \"${CORONA_ROOT}\" ]\nthen\necho \"error: Corona Native has not been setup.  Run 'Native/SetupCoronaNative.app' in your Corona install to set it up\" >&2\n\nexit 1\nelse\necho \"Building with Corona Native from $(readlink \"${CORONA_ROOT}\")\"\nfi\n\n# Check for difficult to debug error involving an item in the Corona\n# project directory having the same name as a file in the app bundle\nif [ -d \"${PROJECT_DIR}/../Corona/${EXECUTABLE_NAME}\" ]\nthen\necho \"ERROR: cannot have a directory called '$(ls \"${PROJECT_DIR}/../Corona\" | grep -iw ${EXECUTABLE_NAME})' in the Corona project directory because it has the same name as the app\"\nexit 1\nfi";
+			shellScript = "# echo \"CORONA_ROOT: ${CORONA_ROOT}\"\nif [ ! -d \"${CORONA_ROOT}\" ]\nthen\necho \"error: Corona Native has not been setup.  Run 'Native/SetupCoronaNative.app' in your Corona install to set it up\" >&2\n\nexit 1\nelse\necho \"Building with Corona Native from $(readlink \"${CORONA_ROOT}\")\"\nfi\n\n# Check for difficult to debug error involving an item in the Corona\n# project directory having the same name as a file in the app bundle\nif [ -d \"${PROJECT_DIR}/../Corona/${EXECUTABLE_NAME}\" ]\nthen\necho \"ERROR: cannot have a directory called '$(ls \"${PROJECT_DIR}/../Corona\" | grep -iw ${EXECUTABLE_NAME})' in the Corona project directory because it has the same name as the app\"\nexit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		F597AC721ED8CA480085F5E5 /* Download Plugins */ = {

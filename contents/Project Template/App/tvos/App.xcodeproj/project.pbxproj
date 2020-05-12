@@ -168,7 +168,6 @@
 				A49EC1431BD76ECE0093F529 /* Sources */,
 				A49EC1441BD76ECE0093F529 /* Frameworks */,
 				A49EC1451BD76ECE0093F529 /* Resources */,
-				A49EC1B91BD77F310093F529 /* Script: Touch CoronaCards.framework */,
 				A49EC1B51BD77E410093F529 /* Embed Frameworks */,
 				A49EC1B61BD77EBA0093F529 /* Script: Compile Lua sources */,
 				A49EC1B71BD77EE90093F529 /* Script: build.settings to Info.plist */,
@@ -204,6 +203,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -274,21 +274,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$CORONA_ROOT\"/Corona/mac/bin/CreateInfoPlist.sh\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		A49EC1B91BD77F310093F529 /* Script: Touch CoronaCards.framework */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Script: Touch CoronaCards.framework";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Ensures that next attempt to build actually rebuilds the executable so it can be (re)app_sign(ed)\necho \"Updating modification time of $CORONA_ROOT/Corona/tvos/frameworks/CoronaCards.framework to trigger relink of $BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\"\necho \"We need to do this b/c app_sign can only sign an unsigned executable.\"\ntouch \"$CORONA_ROOT/Corona/tvos/frameworks/CoronaCards.framework\"";
 			showEnvVarsInLog = 0;
 		};
 		A4DF58591BE2F06F00B17862 /* Script: codesign embedded framework */ = {

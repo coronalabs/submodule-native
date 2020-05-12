@@ -223,17 +223,6 @@ checkError
 cp -v "$ROOT_DIR/platform/resources/CoronaPListSupport.lua" "$CORONA_SHARED_RESOURCE_DIR"
 checkError
 
-# 
-# Certificate
-# 
-# Mac dirs
-
-CERT_FILE=$CORONA_SHARED_RESOURCE_DIR/developerkey.cert
-
-"$CORONA_DIR/mac/bin"/CoronaBuilder.app/Contents/MacOS/CoronaBuilder app_sign create "$CERT_FILE"
-checkError
-
-
 ## Enterprise files
 cp -Rv "$CONTENTS_DIR/Project Template" "$OUTPUT_DIR"
 checkError
