@@ -6,7 +6,7 @@ HEADER_SEARCH_PATHS = $(inherited) "$(CORONA_ROOT)/Corona/shared/include/Corona"
 
 LIBRARY_SEARCH_PATHS = $(inherited) "$(CORONA_ROOT)/Corona/ios/lib"
 
-FRAMEWORK_SEARCH_PATHS = $(inherited) "$(PROJECT_DIR)/EmbeddedFrameworks"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "$(CORONA_ROOT)/Corona/ios/lib" "$(PROJECT_DIR)/EmbeddedFrameworks"
 
 ENABLE_BITCODE = no
 
