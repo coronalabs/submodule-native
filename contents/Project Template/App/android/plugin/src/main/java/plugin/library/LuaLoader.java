@@ -10,7 +10,7 @@
 package plugin.library;
 
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.ansca.corona.CoronaActivity;
 import com.ansca.corona.CoronaEnvironment;
@@ -18,7 +18,8 @@ import com.ansca.corona.CoronaLua;
 import com.ansca.corona.CoronaRuntime;
 import com.ansca.corona.CoronaRuntimeListener;
 import com.ansca.corona.CoronaRuntimeTask;
-import com.ansca.corona.CoronaRuntimeTaskDispatcher;
+import com.ansca.corona.permissions.PermissionState;
+import com.ansca.corona.permissions.PermissionsServices;
 import com.naef.jnlua.JavaFunction;
 import com.naef.jnlua.LuaState;
 import com.naef.jnlua.NamedJavaFunction;
@@ -30,13 +31,13 @@ import com.naef.jnlua.NamedJavaFunction;
  * Only one instance of this class will be created by Corona for the lifetime of the application.
  * This instance will be re-used for every new Corona activity that gets created.
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class LuaLoader implements JavaFunction, CoronaRuntimeListener {
 	/** Lua registry ID to the Lua function to be called when the ad request finishes. */
 	private int fListener;
 
 	/** This corresponds to the event name, e.g. [Lua] event.name */
-	private static final String EVENT_NAME = "pluginlibraryevent";
+	private static final String EVENT_NAME = "pluginLibraryEvent";
 
 
 	/**
@@ -213,7 +214,7 @@ public class LuaLoader implements JavaFunction, CoronaRuntimeListener {
 		}
 
 		// Create web view on the main UI thread.
-		final String url = "http://dictionary.reference.com/browse/" + word;
+		final String url = "https://dictionary.reference.com/browse/" + word;
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -224,17 +225,21 @@ public class LuaLoader implements JavaFunction, CoronaRuntimeListener {
 					return;
 				}
 
+                PermissionsServices permissionsServices = new PermissionsServices(activity.getApplicationContext());
+                PermissionState internetPermission = permissionsServices.getPermissionStateFor("android.permission.INTERNET");
+                switch (internetPermission) {
+                    case MISSING:
+                        Toast.makeText(activity,"Internet permission is not set up",Toast.LENGTH_LONG).show();
+                        return;
+                    case DENIED:
+                        Toast.makeText(activity,"Internet permission is denied",Toast.LENGTH_LONG).show();
+                        return;
+                    case GRANTED:
+                       break;
+                }
+
 				// Create and set up the web view.
 				WebView view = new WebView(activity);
-
-				// Prevent redirect which causes an external browser to be launched
-				// because some sites detect phone/tablet and redirect.
-				view.setWebViewClient(new WebViewClient() {
-					@Override
-					public boolean shouldOverrideUrlLoading(WebView view, String url) {
-						return false;
-					}
-				});
 
 				// Display the web view.
 				activity.getOverlayView().addView(view);
