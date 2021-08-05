@@ -249,7 +249,7 @@ fi
 "$PLATFORM_DIR/tvos/build_templates.sh"
 checkError
 
-mv -v "$PLATFORM_DIR/tvos/build/Release-universal/CoronaCards.framework" "$OUTPUT_DIR/Corona/tvos/frameworks"
+mv -v "$PLATFORM_DIR/tvos/build/Release-universal/CoronaCards.xcframework" "$OUTPUT_DIR/Corona/tvos/frameworks"
 checkError
 
 

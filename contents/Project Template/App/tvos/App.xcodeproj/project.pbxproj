@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,9 +11,9 @@
 		A49EC14F1BD76ECE0093F529 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A49EC14E1BD76ECE0093F529 /* AppDelegate.m */; };
 		A49EC1551BD76ECE0093F529 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A49EC1531BD76ECE0093F529 /* Main.storyboard */; };
 		A49EC1571BD76ECE0093F529 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A49EC1561BD76ECE0093F529 /* Assets.xcassets */; };
+		F57A43D726BBCB5A00010DB3 /* CoronaCards.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A43D526BBCB2200010DB3 /* CoronaCards.xcframework */; };
+		F57A43D826BBCB5A00010DB3 /* CoronaCards.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F57A43D526BBCB2200010DB3 /* CoronaCards.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F5815AC31EE5D6270027695F /* Corona_plugin_library.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A49EC1A91BD77C3A0093F529 /* Corona_plugin_library.framework */; };
-		F5815AC41EE5D6300027695F /* CoronaCards.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5815AC11EE5D6070027695F /* CoronaCards.framework */; };
-		F5815AC51EE5D6300027695F /* CoronaCards.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F5815AC11EE5D6070027695F /* CoronaCards.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F5E5F2571C6D0A4D0088E97A /* Corona_plugin_library.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A49EC1A91BD77C3A0093F529 /* Corona_plugin_library.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -48,8 +48,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F5815AC51EE5D6300027695F /* CoronaCards.framework in Embed Frameworks */,
 				F5E5F2571C6D0A4D0088E97A /* Corona_plugin_library.framework in Embed Frameworks */,
+				F57A43D826BBCB5A00010DB3 /* CoronaCards.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -66,8 +66,8 @@
 		A49EC1581BD76ECE0093F529 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A49EC1911BD779870093F529 /* Plugin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Plugin.xcodeproj; sourceTree = "<group>"; };
 		A49EC1AE1BD77C890093F529 /* main.lua */ = {isa = PBXFileReference; lastKnownFileType = text; name = main.lua; path = ../Corona/main.lua; sourceTree = "<group>"; };
+		F57A43D526BBCB2200010DB3 /* CoronaCards.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CoronaCards.xcframework; path = "$HOME/Library/Application Support/Corona/Native/Corona/tvos/frameworks/CoronaCards.xcframework"; sourceTree = "<absolute>"; };
 		F5815ABD1EE5CBF50027695F /* CoronaNative.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = CoronaNative.xcconfig; sourceTree = "<group>"; };
-		F5815AC11EE5D6070027695F /* CoronaCards.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CoronaCards.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +75,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5815AC41EE5D6300027695F /* CoronaCards.framework in Frameworks */,
 				F5815AC31EE5D6270027695F /* Corona_plugin_library.framework in Frameworks */,
+				F57A43D726BBCB5A00010DB3 /* CoronaCards.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,19 +143,10 @@
 			isa = PBXGroup;
 			children = (
 				F5815ABD1EE5CBF50027695F /* CoronaNative.xcconfig */,
-				F5815AC01EE5D5D60027695F /* Frameworks */,
+				F57A43D526BBCB2200010DB3 /* CoronaCards.xcframework */,
 			);
 			name = CoronaNative;
 			sourceTree = "<group>";
-		};
-		F5815AC01EE5D5D60027695F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F5815AC11EE5D6070027695F /* CoronaCards.framework */,
-			);
-			name = Frameworks;
-			path = "$HOME/Library/Application Support/Corona/Native/Corona/tvos/frameworks";
-			sourceTree = "<absolute>";
 		};
 /* End PBXGroup section */
 
@@ -190,7 +181,7 @@
 		A49EC13F1BD76ECE0093F529 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "Corona Labs";
 				TargetAttributes = {
 					A49EC1461BD76ECE0093F529 = {
@@ -350,16 +341,26 @@
 			baseConfigurationReference = F5815ABD1EE5CBF50027695F /* CoronaNative.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -394,16 +395,26 @@
 			baseConfigurationReference = F5815ABD1EE5CBF50027695F /* CoronaNative.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -432,9 +443,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Assets";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = App/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -445,9 +460,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Assets";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = App/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
