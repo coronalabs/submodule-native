@@ -251,6 +251,10 @@ checkError
 
 mv -v "$PLATFORM_DIR/tvos/build/Release-universal/CoronaCards.xcframework" "$OUTPUT_DIR/Corona/tvos/frameworks"
 checkError
+(
+    cd "$OUTPUT_DIR/Corona/tvos/frameworks"
+    ln -s CoronaCards.xcframework/tvos-arm64/CoronaCards.framework ./
+)
 
 
 # 
