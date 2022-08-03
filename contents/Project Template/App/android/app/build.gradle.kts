@@ -123,7 +123,7 @@ val parsedBuildProperties: JsonObject = run {
     return@run JsonObject(mapOf("buildSettings" to parsedBuildSettingsFile, "packageName" to coronaAppPackage, "targetedAppStore" to coronaTargetStore))
 }
 
-extra["minSdkVersion"] = parsedBuildProperties.lookup<Any?>("buildSettings.android.minSdkVersion").firstOrNull()?.toString()?.toIntOrNull()
+val coronaMinSdkVersion = parsedBuildProperties.lookup<Any?>("buildSettings.android.minSdkVersion").firstOrNull()?.toString()?.toIntOrNull()
         ?: 15
 
 val coronaBuilder = if (windows) {
@@ -181,15 +181,11 @@ if (configureCoronaPlugins == "YES") {
 //</editor-fold>
 
 android {
-    lintOptions {
-        isCheckReleaseBuilds = false
-    }
-    buildToolsVersion("29.0.3")
-    compileSdkVersion(29)
+    compileSdkVersion(32)
     defaultConfig {
         applicationId = coronaAppPackage
-        targetSdkVersion(29)
-        minSdkVersion(extra["minSdkVersion"] as Int)
+        targetSdkVersion(32)
+        minSdkVersion(coronaMinSdkVersion)
         versionCode = coronaVersionCode
         versionName = coronaVersionName
         multiDexEnabled = true
