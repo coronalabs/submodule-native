@@ -42,26 +42,21 @@ build_plugin_structure() {
 
 		if [[ $(file "$SRC_BIN" | grep -c "ar archive") -ne 0 ]]; then
 			echo " - $FRAMEWORK_NAME: is a static Framework, extracting."
-
-			DEST_BIN="$PLUGIN_DEST"/$FRAMEWORK_NAME/$BIN_NAME
-			"$(xcrun -f rsync)" --links --exclude '*.xcconfig' --exclude _CodeSignature --exclude .DS_Store --exclude CVS --exclude .svn --exclude .git --exclude .hg --exclude Headers --exclude PrivateHeaders --exclude Modules -resolve-src-symlinks "$f"  "$PLUGIN_DEST"
-			rm "$DEST_BIN"
-			lipo "$SRC_BIN" $ARCH -o "$DEST_BIN.tmp"
-			$(xcrun -f bitcode_strip) "$DEST_BIN.tmp" -r -o "$DEST_BIN"
-			rm "$DEST_BIN.tmp"
-			rm -rf "$PLUGIN_DEST/$FRAMEWORK_NAME/Versions"
+			DEST_DIR="$PLUGIN_DEST"	
 		else
 			echo " + $FRAMEWORK_NAME: embedding"
-
-			mkdir -p "$PLUGIN_DEST"/resources/Frameworks
-			DEST_BIN="$PLUGIN_DEST"/resources/Frameworks/$FRAMEWORK_NAME/$BIN_NAME
-			"$(xcrun -f rsync)" --links --exclude '*.xcconfig' --exclude _CodeSignature --exclude .DS_Store --exclude CVS --exclude .svn --exclude .git --exclude .hg --exclude Headers --exclude PrivateHeaders --exclude Modules -resolve-src-symlinks "$f"  "$PLUGIN_DEST"/resources/Frameworks
-			rm "$DEST_BIN"
-			lipo "$SRC_BIN" $ARCH -o "$DEST_BIN.tmp"
-			$(xcrun -f bitcode_strip) "$DEST_BIN.tmp" -r -o "$DEST_BIN"
-			rm "$DEST_BIN.tmp"
-			rm -rf "$PLUGIN_DEST/$FRAMEWORK_NAME/Versions"
+			DEST_DIR="$PLUGIN_DEST"/resources/Frameworks
 		fi
+		
+		DEST_BIN="$DEST_DIR/$FRAMEWORK_NAME/$BIN_NAME"
+		mkdir -p "$DEST_DIR"
+		"$(xcrun -f rsync)" --links --exclude '*.xcconfig' --exclude _CodeSignature --exclude .DS_Store --exclude CVS --exclude .svn --exclude .git --exclude .hg --exclude Headers --exclude PrivateHeaders --exclude Modules -resolve-src-symlinks "$f"  "$DEST_DIR"
+		
+		rm "$DEST_BIN"
+		lipo "$SRC_BIN" $ARCH -o "$DEST_BIN.tmp"
+		$(xcrun -f bitcode_strip) "$DEST_BIN.tmp" -r -o "$DEST_BIN"
+		rm "$DEST_BIN.tmp"
+		rm -rf "$PLUGIN_DEST/$FRAMEWORK_NAME/Versions"
 	done
 }
 
