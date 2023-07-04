@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		DB3D9C082989D259002A3B7E /* Download Plugins */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = DB3D9C0B2989D25B002A3B7E /* Build configuration list for PBXAggregateTarget "Download Plugins" */;
+			buildPhases = (
+				DB3D9C0C2989D2CE002A3B7E /* Download Plugins */,
+			);
+			dependencies = (
+			);
+			name = "Download Plugins";
+			productName = "Download Plugins";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		A447B610165D72FB009EA762 /* AppCoronaDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = A447B60F165D72FB009EA762 /* AppCoronaDelegate.mm */; };
 		A447B6671666FD02009EA762 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = A447B6641666FD02009EA762 /* MainWindow-iPad.xib */; };
@@ -322,6 +336,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0820;
+				TargetAttributes = {
+					DB3D9C082989D259002A3B7E = {
+						CreatedOnToolsVersion = 14.2;
+						DevelopmentTeam = A6QFRGXX8S;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = A484111315114F700074BD57 /* Build configuration list for PBXProject "App" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -343,6 +364,7 @@
 			projectRoot = "";
 			targets = (
 				A484111815114F700074BD57 /* App */,
+				DB3D9C082989D259002A3B7E /* Download Plugins */,
 			);
 		};
 /* End PBXProject section */
@@ -419,6 +441,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# echo \"CORONA_ROOT: ${CORONA_ROOT}\"\nif [ ! -d \"${CORONA_ROOT}\" ]\nthen\necho \"error: Corona Native has not been setup.  Run 'Native/SetupCoronaNative.app' in your Corona install to set it up\" >&2\n\nexit 1\nelse\necho \"Building with Corona Native from $(readlink \"${CORONA_ROOT}\")\"\nfi\n\n# Check for difficult to debug error involving an item in the Corona\n# project directory having the same name as a file in the app bundle\nif [ -d \"${PROJECT_DIR}/../Corona/${EXECUTABLE_NAME}\" ]\nthen\necho \"ERROR: cannot have a directory called '$(ls \"${PROJECT_DIR}/../Corona\" | grep -iw ${EXECUTABLE_NAME})' in the Corona project directory because it has the same name as the app\"\nexit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		DB3D9C0C2989D2CE002A3B7E /* Download Plugins */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../Corona",
+			);
+			name = "Download Plugins";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\nBUILDER_PATH=\"$CORONA_ROOT\"/Corona/mac/bin/CoronaBuilder.app/Contents/MacOS/CoronaBuilder\n\n\"$BUILDER_PATH\" plugins download ios \"$PROJECT_DIR/../Corona/build.settings\" \"$PROJECT_DIR/CoronaApp.xcconfig\" $CORONA_FORCE_LOAD\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n\ntouch \"$SRCROOT/../Corona\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -580,6 +622,26 @@
 			};
 			name = Release;
 		};
+		DB3D9C092989D25B002A3B7E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CORONA_ROOT = "$HOME/Library/Application Support/Corona/Native";
+				DEVELOPMENT_TEAM = A6QFRGXX8S;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		DB3D9C0A2989D25B002A3B7E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CORONA_ROOT = "$HOME/Library/Application Support/Corona/Native";
+				DEVELOPMENT_TEAM = A6QFRGXX8S;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -597,6 +659,15 @@
 			buildConfigurations = (
 				A484114315114F700074BD57 /* Debug */,
 				A484114415114F700074BD57 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB3D9C0B2989D25B002A3B7E /* Build configuration list for PBXAggregateTarget "Download Plugins" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB3D9C092989D25B002A3B7E /* Debug */,
+				DB3D9C0A2989D25B002A3B7E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
