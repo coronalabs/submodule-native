@@ -38,11 +38,16 @@ val coronaSrcDir = project.findProperty("coronaSrcDir") as? String
             "$rootDir/../Corona"
         }
 val coronaBuiltFromSource = file("CMakeLists.txt").exists() && file("../sdk").exists()
+
 val windows = System.getProperty("os.name").toLowerCase().contains("windows")
-val shortOsName = if (windows) "win" else "mac"
+val linux = System.getProperty("os.name").toLowerCase().contains("linux")
+val shortOsName = if (windows) "win" else if (linux) "linux" else "mac"
+
 val nativeDir = if (windows) {
     val resourceDir = coronaResourcesDir?.let { file("$it/../Native/").absolutePath }?.takeIf { file(it).exists() }
     (resourceDir ?: "${System.getenv("CORONA_PATH")}/Native").replace("\\", "/")
+} else if (linux) {
+    "$coronaResourcesDir/Native"
 } else {
     val resourceDir = coronaResourcesDir?.let { file("$it/../../../Native/").absolutePath }?.takeIf { file(it).exists() }
     resourceDir ?: "${System.getenv("HOME")}/Library/Application Support/Corona/Native/"
@@ -60,7 +65,7 @@ fun checkCoronaNativeInstallation() {
     } else {
         val setupNativeApp = File("/Applications").listFiles { f ->
             f.isDirectory && f.name.startsWith("Corona")
-        }?.max()?.let {
+        }.maxOrNull()?.let {
             "${it.absolutePath}/Native/Setup Corona Native.app"
         } ?: "Native/Setup Corona Native.app"
         throw InvalidUserDataException("Corona Native was not set-up properly. Launch '$setupNativeApp'.")
@@ -123,15 +128,16 @@ val parsedBuildProperties: JsonObject = run {
     return@run JsonObject(mapOf("buildSettings" to parsedBuildSettingsFile, "packageName" to coronaAppPackage, "targetedAppStore" to coronaTargetStore))
 }
 
-val coronaMinSdkVersion = parsedBuildProperties.lookup<Any?>("buildSettings.android.minSdkVersion").firstOrNull()?.toString()?.toIntOrNull()
+extra["minSdkVersion"] = parsedBuildProperties.lookup<Any?>("buildSettings.android.minSdkVersion").firstOrNull()?.toString()?.toIntOrNull()
         ?: 15
 
 val coronaBuilder = if (windows) {
     "$nativeDir/Corona/win/bin/CoronaBuilder.exe"
+} else if (linux) {
+    "$coronaResourcesDir/../Solar2DBuilder"
 } else {
     "$nativeDir/Corona/$shortOsName/bin/CoronaBuilder.app/Contents/MacOS/CoronaBuilder"
 }
-
 
 val coronaVersionName =
         parsedBuildProperties.lookup<Any?>("buildSettings.android.versionName").firstOrNull()?.toString()
@@ -143,6 +149,8 @@ val coronaVersionCode: Int =
 
 val androidDestPluginPlatform = if (coronaTargetStore.equals("amazon", ignoreCase = true)) {
     "android-kindle"
+} else if (coronaTargetStore.equals("samsung", ignoreCase = true)) {
+    "android-nongoogle"
 } else {
     "android"
 }
@@ -181,18 +189,21 @@ if (configureCoronaPlugins == "YES") {
 //</editor-fold>
 
 android {
-    compileSdkVersion(32)
+    lintOptions {
+        isCheckReleaseBuilds = true
+    }
+    compileSdk = 33
     defaultConfig {
         applicationId = coronaAppPackage
-        targetSdkVersion(32)
-        minSdkVersion(coronaMinSdkVersion)
+        targetSdk = 33
+        minSdk = (extra["minSdkVersion"] as Int)
         versionCode = coronaVersionCode
         versionName = coronaVersionName
         multiDexEnabled = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility  = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility  = JavaVersion.VERSION_11
     }
     coronaKeystore?.let { keystore ->
         signingConfigs {
@@ -247,6 +258,13 @@ android {
     if (isExpansionFileRequired) {
         assetPacks.add(":preloadedAssets")
     }
+
+    parsedBuildProperties.lookup<JsonArray<JsonObject>>("buildSettings.android.onDemandResources").firstOrNull()?.forEach {
+        it["tag"].let { tag ->
+            assetPacks.add(":pda-$tag")
+        }
+    }
+
     // This is dirty hack because Android Assets refuse to copy assets which start with . or _
     if (!isExpansionFileRequired) {
         android.applicationVariants.all {
@@ -347,6 +365,12 @@ fun coronaAssetsCopySpec(spec: CopySpec) {
     with(spec) {
         file("$coronaTmpDir/excludesfile.properties").takeIf { it.exists() }?.readLines()?.forEach {
             exclude(it)
+        }
+        parsedBuildProperties.lookup<JsonArray<JsonObject>>("buildSettings.android.onDemandResources").firstOrNull()?.forEach {
+            it["resource"].let { res ->
+                exclude("$res")
+                exclude("$res/**")
+            }
         }
         if (!isSimulatorBuild) {
             // use build.settings properties only if this is not simulator build
@@ -782,6 +806,7 @@ tasks.register<Zip>("exportCoronaAppTemplate") {
         exclude("**/*.iml", "**/\\.*")
         include("setup.sh", "setup.bat")
         include("preloadedAssets/build.gradle.kts")
+        include("PAD.kts.template")
         into("template")
     }
     from(android.sdkDirectory) {
@@ -866,15 +891,24 @@ tasks.register<Copy>("installAppTemplateAndAARToSim") {
 fun copyWithAppFilename(dest: String, appName: String?) {
     delete("$dest/$coronaAppFileName.apk")
     delete("$dest/$coronaAppFileName.aab")
+    var hasODR = false
+    parsedBuildProperties.lookup<JsonArray<JsonObject>>("buildSettings.android.onDemandResources").firstOrNull()?.forEach {
+        it["resource"].let { res ->
+            hasODR = true
+        }
+    }
+
     copy {
         into(dest)
         val copyTask = this
         android.applicationVariants.matching {
             it.name.equals("release", true)
         }.all {
-            copyTask.from(packageApplicationProvider!!.get().outputDirectory) {
-                include("*.apk")
-                exclude("*unsigned*")
+            if(!isExpansionFileRequired && !hasODR) {
+                copyTask.from(packageApplicationProvider!!.get().outputDirectory) {
+                    include("*.apk")
+                    exclude("*unsigned*")
+                }
             }
             copyTask.from("$buildDir/outputs/bundle/$name") {
                 include("*.aab")
@@ -907,10 +941,6 @@ tasks.create("buildCoronaApp") {
                 }
             }
             delete("$it/$coronaExpansionFileName")
-            copy {
-                from("$buildDir/outputs/$coronaExpansionFileName")
-                into(it)
-            }
         }
     }
 }
