@@ -246,23 +246,23 @@ then
     export JOB_NAME=Enterprise
 fi
 
-"$PLATFORM_DIR/tvos/build_templates.sh"
-checkError
+# "$PLATFORM_DIR/tvos/build_templates.sh"
+# checkError
 
-mv -v "$PLATFORM_DIR/tvos/build/Release-universal/CoronaCards.xcframework" "$OUTPUT_DIR/Corona/tvos/frameworks"
-checkError
-(
-    cd "$OUTPUT_DIR/Corona/tvos/frameworks"
-    ln -s CoronaCards.xcframework/tvos-arm64/CoronaCards.framework ./
-)
+# mv -v "$PLATFORM_DIR/tvos/build/Release-universal/CoronaCards.xcframework" "$OUTPUT_DIR/Corona/tvos/frameworks"
+# checkError
+# (
+#     cd "$OUTPUT_DIR/Corona/tvos/frameworks"
+#     ln -s CoronaCards.xcframework/tvos-arm64/CoronaCards.framework ./
+# )
 
 
-# 
-# iOS
-#
+# # 
+# # iOS
+# #
 
-"$PLATFORM_DIR/iphone/enterprise/build.sh" "$USER" "$PASSWORD" "$OUTPUT_DIR" "$TARGET"
-checkError
+# "$PLATFORM_DIR/iphone/enterprise/build.sh" "$USER" "$PASSWORD" "$OUTPUT_DIR" "$TARGET"
+# checkError
 
 
 # 
