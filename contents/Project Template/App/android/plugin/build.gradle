@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdk 33
+    namespace "plugin.library"
+    compileSdk 34
 
     defaultConfig {
         minSdkVersion 15
-        targetSdk 33
         versionCode 1
         versionName "1.0"
     }
@@ -17,20 +17,21 @@ android {
 }
 
 dependencies {
-    implementation ':Corona@aar'    
+    implementation ':Corona@aar'
 }
 
+def buildDirectory = getLayout().getBuildDirectory().asFile.get()
 tasks.register("extractPluginJar") {
     group "Solar2Dev"
     dependsOn assembleRelease
     doLast {
         copy {
             from {
-                zipTree("$buildDir/outputs/aar/${project.name}-release.aar").matching {
+                zipTree("$buildDirectory/outputs/aar/${project.name}-release.aar").matching {
                     include 'classes.jar'
                 }.singleFile
             }
-            into "$buildDir/outputs/"
+            into "$buildDirectory/outputs/"
             String packageName = new XmlSlurper().parse(file('src/main/AndroidManifest.xml')).@package.text()
             rename "classes.jar", "${packageName}.jar"
         }
@@ -54,7 +55,7 @@ tasks.register("deployToLocalSolar2DRepo", Tar) {
     compression = Compression.GZIP
     archiveFileName = "data.tgz"
     def rootS2DP
-    if(System.env.APP_DATA) {
+    if (System.env.APP_DATA) {
         rootS2DP = System.env.APP_DATA
     } else {
         rootS2DP = System.env.HOME
@@ -63,7 +64,7 @@ tasks.register("deployToLocalSolar2DRepo", Tar) {
     destinationDirectory = dst
 
     into("/") {
-        from("$buildDir/outputs/aar")
+        from("$buildDirectory/outputs/aar")
         include("${project.name}-release.aar")
     }
     doLast {
