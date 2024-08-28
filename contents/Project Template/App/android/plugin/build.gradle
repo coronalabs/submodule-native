@@ -1,10 +1,10 @@
 apply plugin: 'com.android.library'
 
 android {
-    namespace "plugin.library"
     compileSdk 34
-
     defaultConfig {
+        namespace "plugin.library" // This is the package name of the plugin
+
         minSdkVersion 15
         versionCode 1
         versionName "1.0"
@@ -32,7 +32,7 @@ tasks.register("extractPluginJar") {
                 }.singleFile
             }
             into "$buildDirectory/outputs/"
-            String packageName = new XmlSlurper().parse(file('src/main/AndroidManifest.xml')).@package.text()
+            String packageName = android.namespace
             rename "classes.jar", "${packageName}.jar"
         }
     }
@@ -50,7 +50,7 @@ tasks.register("deployToLocalSolar2DRepo", Tar) {
     File pluginManifestFile = file("src/main/AndroidManifest.xml")
     String manifestContents = pluginManifestFile.text
     def pluginManifestXml = new XmlSlurper().parseText(manifestContents)
-    String packageName = pluginManifestXml.@package.toString()
+    String packageName = android.namespace
 
     compression = Compression.GZIP
     archiveFileName = "data.tgz"
