@@ -37,7 +37,6 @@
 		A484118615128D5D0074BD57 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A484117215128D5D0074BD57 /* OpenAL.framework */; };
 		A484118715128D5D0074BD57 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A484117315128D5D0074BD57 /* QuartzCore.framework */; };
 		A484118815128D5D0074BD57 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A484117415128D5D0074BD57 /* Security.framework */; };
-		A484118915128D5D0074BD57 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A484117515128D5D0074BD57 /* StoreKit.framework */; };
 		A484118A15128D5D0074BD57 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A484117615128D5D0074BD57 /* SystemConfiguration.framework */; };
 		A48411CA15129F610074BD57 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A48411C915129F610074BD57 /* libsqlite3.dylib */; };
 		A48B82EA16D709DB00CA01A1 /* CoronaResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A48B82E916D709DB00CA01A1 /* CoronaResources.bundle */; };
@@ -89,7 +88,6 @@
 		A484117215128D5D0074BD57 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		A484117315128D5D0074BD57 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A484117415128D5D0074BD57 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		A484117515128D5D0074BD57 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A484117615128D5D0074BD57 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		A48411C915129F610074BD57 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		A48B82E916D709DB00CA01A1 /* CoronaResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = CoronaResources.bundle; path = Corona/ios/resource/CoronaResources.bundle; sourceTree = "<group>"; };
@@ -142,7 +140,6 @@
 				A484112615114F700074BD57 /* OpenGLES.framework in Frameworks */,
 				A484118715128D5D0074BD57 /* QuartzCore.framework in Frameworks */,
 				A484118815128D5D0074BD57 /* Security.framework in Frameworks */,
-				A484118915128D5D0074BD57 /* StoreKit.framework in Frameworks */,
 				A484118A15128D5D0074BD57 /* SystemConfiguration.framework in Frameworks */,
 				A4E2537F166AE3DC00DCDC2C /* Twitter.framework in Frameworks */,
 				A484111E15114F700074BD57 /* UIKit.framework in Frameworks */,
@@ -222,7 +219,6 @@
 				A484112515114F700074BD57 /* OpenGLES.framework */,
 				A484117315128D5D0074BD57 /* QuartzCore.framework */,
 				A484117415128D5D0074BD57 /* Security.framework */,
-				A484117515128D5D0074BD57 /* StoreKit.framework */,
 				A484117615128D5D0074BD57 /* SystemConfiguration.framework */,
 				A4E2537E166AE3DC00DCDC2C /* Twitter.framework */,
 				A484111D15114F700074BD57 /* UIKit.framework */,
@@ -288,6 +284,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0820;
+				TargetAttributes = {
+					A484111815114F700074BD57 = {
+						DevelopmentTeam = A6QFRGXX8S;
+					};
+				};
 			};
 			buildConfigurationList = A484111315114F700074BD57 /* Build configuration list for PBXProject "CustomErrorHandler" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -484,13 +485,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = A6QFRGXX8S;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "App-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.${PRODUCT_NAME:rfc1034identifier}";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.--PRODUCT-NAME-rfc1034identifier-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SEPARATE_STRIP = YES;
@@ -507,13 +509,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = A6QFRGXX8S;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "App-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.${PRODUCT_NAME:rfc1034identifier}";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.--PRODUCT-NAME-rfc1034identifier-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SEPARATE_STRIP = YES;
