@@ -3,14 +3,31 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
+
+/* Begin PBXAggregateTarget section */
+		DBC2CBD32D4B58AD00C118A0 /* Download tvOS Plugins */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = DBC2CBD42D4B58AD00C118A0 /* Build configuration list for PBXAggregateTarget "Download tvOS Plugins" */;
+			buildPhases = (
+				DBC2CBD72D4B58C400C118A0 /* Download Plugins */,
+			);
+			dependencies = (
+			);
+			name = "Download tvOS Plugins";
+			packageProductDependencies = (
+			);
+			productName = "Download tvOS Plugins";
+		};
+/* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
 		A49EC14C1BD76ECE0093F529 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = A49EC14B1BD76ECE0093F529 /* main.mm */; };
 		A49EC14F1BD76ECE0093F529 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A49EC14E1BD76ECE0093F529 /* AppDelegate.m */; };
 		A49EC1551BD76ECE0093F529 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A49EC1531BD76ECE0093F529 /* Main.storyboard */; };
 		A49EC1571BD76ECE0093F529 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A49EC1561BD76ECE0093F529 /* Assets.xcassets */; };
+		DBC2CBD22D4B57F000C118A0 /* CoronaApp.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = DBC2CBD12D4B57F000C118A0 /* CoronaApp.xcconfig */; };
 		F57A43D726BBCB5A00010DB3 /* CoronaCards.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A43D526BBCB2200010DB3 /* CoronaCards.xcframework */; };
 		F57A43D826BBCB5A00010DB3 /* CoronaCards.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F57A43D526BBCB2200010DB3 /* CoronaCards.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F5815AC31EE5D6270027695F /* Corona_plugin_library.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A49EC1A91BD77C3A0093F529 /* Corona_plugin_library.framework */; };
@@ -66,6 +83,7 @@
 		A49EC1581BD76ECE0093F529 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A49EC1911BD779870093F529 /* Plugin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Plugin.xcodeproj; sourceTree = "<group>"; };
 		A49EC1AE1BD77C890093F529 /* main.lua */ = {isa = PBXFileReference; lastKnownFileType = text; name = main.lua; path = ../Corona/main.lua; sourceTree = "<group>"; };
+		DBC2CBD12D4B57F000C118A0 /* CoronaApp.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = CoronaApp.xcconfig; sourceTree = "<group>"; };
 		F57A43D526BBCB2200010DB3 /* CoronaCards.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CoronaCards.xcframework; path = "$HOME/Library/Application Support/Corona/Native/Corona/tvos/frameworks/CoronaCards.xcframework"; sourceTree = "<absolute>"; };
 		F5815ABD1EE5CBF50027695F /* CoronaNative.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = CoronaNative.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -142,6 +160,7 @@
 		F5815ABB1EE5CBD20027695F /* CoronaNative */ = {
 			isa = PBXGroup;
 			children = (
+				DBC2CBD12D4B57F000C118A0 /* CoronaApp.xcconfig */,
 				F5815ABD1EE5CBF50027695F /* CoronaNative.xcconfig */,
 				F57A43D526BBCB2200010DB3 /* CoronaCards.xcframework */,
 			);
@@ -187,6 +206,9 @@
 					A49EC1461BD76ECE0093F529 = {
 						CreatedOnToolsVersion = 7.1;
 					};
+					DBC2CBD32D4B58AD00C118A0 = {
+						CreatedOnToolsVersion = 16.2;
+					};
 				};
 			};
 			buildConfigurationList = A49EC1421BD76ECE0093F529 /* Build configuration list for PBXProject "App" */;
@@ -210,6 +232,7 @@
 			projectRoot = "";
 			targets = (
 				A49EC1461BD76ECE0093F529 /* App */,
+				DBC2CBD32D4B58AD00C118A0 /* Download tvOS Plugins */,
 			);
 		};
 /* End PBXProject section */
@@ -231,6 +254,7 @@
 			files = (
 				A49EC1571BD76ECE0093F529 /* Assets.xcassets in Resources */,
 				A49EC1551BD76ECE0093F529 /* Main.storyboard in Resources */,
+				DBC2CBD22D4B57F000C118A0 /* CoronaApp.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +321,26 @@
 			shellScript = "# echo \"CORONA_ROOT: ${CORONA_ROOT}\"\nif [ ! -d \"${CORONA_ROOT}\" ]\nthen\necho \"error: Corona Native has not been setup.  Run 'Native/SetupCoronaNative.app' in your Corona install to set it up\" >&2\n\nexit 1\nelse\necho \"Building with Corona Native from $(readlink \"${CORONA_ROOT}\")\"\nfi\n\n# Check for difficult to debug error involving an item in the Corona\n# project directory having the same name as a file in the app bundle\nif [ -d \"${PROJECT_DIR}/../Corona/${EXECUTABLE_NAME}\" ]\nthen\necho \"ERROR: cannot have a directory called '$(ls \"${PROJECT_DIR}/../Corona\" | grep -iw ${EXECUTABLE_NAME})' in the Corona project directory because it has the same name as the app\"\nexit 1\nfi";
 			showEnvVarsInLog = 0;
 		};
+		DBC2CBD72D4B58C400C118A0 /* Download Plugins */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../Corona",
+			);
+			name = "Download Plugins";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\nBUILDER_PATH=\"$CORONA_ROOT\"/Corona/mac/bin/CoronaBuilder.app/Contents/MacOS/CoronaBuilder\n\n\"$BUILDER_PATH\" plugins download tvOS \"$PROJECT_DIR/../Corona/build.settings\" \"$PROJECT_DIR/CoronaApp.xcconfig\" $CORONA_FORCE_LOAD\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n\ntouch \"$SRCROOT/../Corona\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -338,7 +382,7 @@
 /* Begin XCBuildConfiguration section */
 		A49EC1591BD76ECE0093F529 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F5815ABD1EE5CBF50027695F /* CoronaNative.xcconfig */;
+			baseConfigurationReference = DBC2CBD12D4B57F000C118A0 /* CoronaApp.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -392,7 +436,7 @@
 		};
 		A49EC15A1BD76ECE0093F529 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F5815ABD1EE5CBF50027695F /* CoronaNative.xcconfig */;
+			baseConfigurationReference = DBC2CBD12D4B57F000C118A0 /* CoronaApp.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -472,6 +516,24 @@
 			};
 			name = Release;
 		};
+		DBC2CBD52D4B58AD00C118A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A6QFRGXX8S;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		DBC2CBD62D4B58AD00C118A0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A6QFRGXX8S;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -489,6 +551,15 @@
 			buildConfigurations = (
 				A49EC15C1BD76ECE0093F529 /* Debug */,
 				A49EC15D1BD76ECE0093F529 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DBC2CBD42D4B58AD00C118A0 /* Build configuration list for PBXAggregateTarget "Download tvOS Plugins" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DBC2CBD52D4B58AD00C118A0 /* Debug */,
+				DBC2CBD62D4B58AD00C118A0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
