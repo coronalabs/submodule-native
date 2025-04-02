@@ -256,8 +256,23 @@ checkError
     ln -s CoronaCards.xcframework/tvos-arm64/CoronaCards.framework ./
 )
 
+#
+# MacOS
+#
 
-# 
+if [ -z "${JOB_NAME}" ]
+then
+    export JOB_NAME=Enterprise
+fi
+
+"$PLATFORM_DIR/mac/build_native.sh"
+checkError
+
+mkdir -p "$OUTPUT_DIR/Corona/Mac/frameworks"
+
+mv -v "$PLATFORM_DIR/mac/build/Release/CoronaCards.framework" "$OUTPUT_DIR/Corona/mac/frameworks"
+
+#
 # iOS
 #
 
