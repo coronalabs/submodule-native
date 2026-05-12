@@ -170,11 +170,10 @@
 				E640B2F21BFC00B00031FAE9 /* AssetsLibrary.framework in Frameworks */,
 				F5BB41531BC42ACF0033F6FA /* CoreText.framework in Frameworks */,
 				A46885F418068C2900381941 /* CoreVideo.framework in Frameworks */,
-				A46885F218068C2200381941 /* GLKit.framework in Frameworks */,
-				A4C2449A1683FA5300C395D1 /* Accounts.framework in Frameworks */,
-				A4C2449C1683FA5300C395D1 /* Social.framework in Frameworks */,
-				A484117715128D5D0074BD57 /* AddressBook.framework in Frameworks */,
-				A484117815128D5D0074BD57 /* AddressBookUI.framework in Frameworks */,
+				/* GLKit removed: not available on Mac Catalyst; MetalANGLE replaces OpenGL */
+				/* Accounts/Social/Twitter removed: not available on Mac Catalyst */
+				/* AddressBook/AddressBookUI removed: deprecated, not available on Mac Catalyst */
+				/* OpenGLES removed: not available on Mac Catalyst; libplayer.xcframework provides Metal/ANGLE support */
 				A484117915128D5D0074BD57 /* AudioToolbox.framework in Frameworks */,
 				A484117A15128D5D0074BD57 /* AVFoundation.framework in Frameworks */,
 				A484117B15128D5D0074BD57 /* CFNetwork.framework in Frameworks */,
@@ -193,13 +192,11 @@
 				A484118415128D5D0074BD57 /* MessageUI.framework in Frameworks */,
 				A484118515128D5D0074BD57 /* MobileCoreServices.framework in Frameworks */,
 				A484118615128D5D0074BD57 /* OpenAL.framework in Frameworks */,
-				A484112615114F700074BD57 /* OpenGLES.framework in Frameworks */,
 				A484118715128D5D0074BD57 /* QuartzCore.framework in Frameworks */,
 				A484118815128D5D0074BD57 /* Security.framework in Frameworks */,
 				A484118915128D5D0074BD57 /* StoreKit.framework in Frameworks */,
 				DB480E712EF9B100000053CA /* libplayer.xcframework in Frameworks */,
 				A484118A15128D5D0074BD57 /* SystemConfiguration.framework in Frameworks */,
-				A4E2537F166AE3DC00DCDC2C /* Twitter.framework in Frameworks */,
 				A484111E15114F700074BD57 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -432,7 +429,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "export TARGET_PLATFORM=ios\nCORONA_MAC_BIN=\"$CORONA_ROOT/Corona/mac/bin\"\nCORONA_SHARED_BIN=\"$CORONA_ROOT/Corona/shared/bin\"\nexport LUA_CPATH=\"$CORONA_MAC_BIN/?.so\"\n\"$CORONA_MAC_BIN\"/lua -e \"package.path='$CORONA_SHARED_BIN/?.lua;$CORONA_SHARED_BIN/?/init.lua;'..package.path\" \"$CORONA_SHARED_BIN\"/Compile.lua mac \"$CORONA_ROOT\"\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n";
+			shellScript = "export TARGET_PLATFORM=ios\nif [ \"$IS_MACCATALYST\" = \"YES\" ]; then\n    export IS_MAC_NATIVE=true\nfi\nCORONA_MAC_BIN=\"$CORONA_ROOT/Corona/mac/bin\"\nCORONA_SHARED_BIN=\"$CORONA_ROOT/Corona/shared/bin\"\nexport LUA_CPATH=\"$CORONA_MAC_BIN/?.so\"\n\"$CORONA_MAC_BIN\"/lua -e \"package.path='$CORONA_SHARED_BIN/?.lua;$CORONA_SHARED_BIN/?/init.lua;'..package.path\" \"$CORONA_SHARED_BIN\"/Compile.lua mac \"$CORONA_ROOT\"\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		A484118B15128E320074BD57 /* build.settings to Info.plist */ = {
@@ -446,8 +443,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$CORONA_ROOT\"/Corona/mac/bin/CreateInfoPlist.sh\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n";
+			shellPath = /bin/bash;
+			shellScript = "if [ \"$IS_MACCATALYST\" = \"YES\" ]; then\n    \"$CORONA_ROOT\"/Corona/mac/bin/CreateInfoPlist.sh --macOS\nelse\n    \"$CORONA_ROOT\"/Corona/mac/bin/CreateInfoPlist.sh\nfi\n\nif [ $? -ne 0 ]\nthen\n    echo \"Exiting due to errors (above)\"\n    exit -1\nfi\n\n\n# Mac Catalyst debug builds sometimes leave the main executable unsigned because\n# Xcode creates the executor stub after its own codesigning pass. Sign it here\n# (before the outer-bundle codesign) so the bundle-level codesign succeeds.\nif [ \"$IS_MACCATALYST\" = \"YES\" ] && [ -n \"$EXPANDED_CODE_SIGN_IDENTITY\" ] && [ \"$EXPANDED_CODE_SIGN_IDENTITY\" != \"\" ]; then\n    APP_BIN=\"$BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\"\n    if [ -f \"$APP_BIN\" ]; then\n        if ! /usr/bin/codesign -v \"$APP_BIN\" 2>/dev/null; then\n            /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" \\\n                             -o runtime \\\n                             --entitlements \"$SRCROOT/$CODE_SIGN_ENTITLEMENTS\" \\\n                             --timestamp=none \\\n                             \"$APP_BIN\"\n        fi\n    fi\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		C28A3B451EE9F8FD00F08609 /* Corona Native */ = {
@@ -612,12 +609,14 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SEPARATE_STRIP = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator maccatalyst";
+				SUPPORTS_MACCATALYST = YES;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -634,12 +633,14 @@
 				GCC_PREFIX_HEADER = Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SEPARATE_STRIP = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator maccatalyst";
+				SUPPORTS_MACCATALYST = YES;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

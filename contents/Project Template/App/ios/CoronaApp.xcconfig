@@ -4,9 +4,15 @@
 // import Corona native location and basic settings
 #include "CoronaNative.xcconfig"
 
-// To use Metal rather than 'classic' change framework linked to "libplayer-angle.xcframework" from Native/Corona/ios/lib/
-// And make sure to drag Native/Corona/ios/lib/MetalANGLE.framework into App's framework list
+// Mac Catalyst is supported out of the box via libplayer.xcframework,
+// which includes device, simulator, and Mac Catalyst slices.
+// SUPPORTS_MACCATALYST = YES is already set in this template.
+//
+// To disable Mac Catalyst support, set SUPPORTS_MACCATALYST = NO in the
+// App target's build settings.
 
 OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) $(CORONA_CUSTOM_LDFLAGS) -all_load -Xlinker -undefined -Xlinker dynamic_lookup
 OTHER_LDFLAGS[sdk=iphonesimulator*] = $(inherited) $(CORONA_CUSTOM_LDFLAGS) -all_load -Xlinker -undefined -Xlinker dynamic_lookup
 
+// Mac Catalyst builds use the macOS SDK internally (sdk=macosx*)
+OTHER_LDFLAGS[sdk=macosx*] = $(inherited) $(CORONA_CUSTOM_LDFLAGS) -all_load -Xlinker -undefined -Xlinker dynamic_lookup
